@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactMapGL, { NavigationControl, Marker } from "react-map-gl";
 import { withStyles } from "@material-ui/core/styles";
 // import Button from "@material-ui/core/Button";
@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles";
 // import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
 
 import PinIcon from "./PinIcon";
+import Context from "../context";
+import Task from "./Task";
 
 const INITIAL_VIEWPORT = {
   latitude: 37.7,
@@ -14,6 +16,7 @@ const INITIAL_VIEWPORT = {
 };
 
 const Map = ({ classes }) => {
+  const { state, dispatch } = useContext(Context);
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [userPosition, setUserPosition] = useState(null);
   useEffect(() => {
@@ -30,14 +33,28 @@ const Map = ({ classes }) => {
     }
   };
 
+  const handleMapClick = ({ lngLat, leftButton }) => {
+    // console.log(event);
+    if (!leftButton) return;
+    if (!state.draft) {
+      dispatch({ type: "CREATE_DRAFT_PIN" });
+    }
+    const [longitude, latitude] = lngLat;
+    dispatch({
+      type: "UPDATE_DRAFT_LOCATION",
+      payload: { longitude, latitude },
+    });
+  };
+
   return (
     <div className={classes.root}>
       <ReactMapGL
         width="100vw"
-        height="calc(100vh - 64px)"
+        height="calc(80vh - 64px)"
         mapStyle="mapbox://styles/mapbox/streets-v9"
         mapboxApiAccessToken="pk.eyJ1Ijoic2Ftc3VoIiwiYSI6ImNrYjkzYjUxdzA0OGIycXBnZnJ0NDhteWQifQ.uQzdLD-SkYlLepv1Gt48qQ"
         onViewportChange={(newViewport) => setViewport(newViewport)}
+        onClick={handleMapClick}
         {...viewport}
       >
         {/* Navigation Control  */}
@@ -52,13 +69,31 @@ const Map = ({ classes }) => {
           <Marker
             latitude={userPosition.latitude}
             longitude={userPosition.longitude}
-            offsetLeft={-19}
-            offsetRight={-37}
+            // offsetLeft={-19}
+            // offsetRight={-37}
           >
             <PinIcon size={40} color="red" />
           </Marker>
         )}
+
+        {/* Draft Pin */}
+        {state.draft && (
+          <Marker
+            latitude={state.draft.latitude}
+            longitude={state.draft.longitude}
+            offsetLeft={-22}
+            offsetRight={-37}
+            offsetTop={-38}
+          >
+            <PinIcon size={40} color="hotpink" />
+          </Marker>
+        )}
       </ReactMapGL>
+
+      {/* Task Area to add Pin Content. Comes from /Pin folder
+      Turn this into a modal area to improve UX*/}
+
+      <Task />
     </div>
   );
 };
