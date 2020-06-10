@@ -1,34 +1,59 @@
-import React from "react";
+import React, { useContext } from "react";
 import { GraphQLClient } from "graphql-request";
 import { GoogleLogin } from "react-google-login";
 import { withStyles } from "@material-ui/core/styles";
-// import Typography from "@material-ui/core/Typography";
+import Typography from "@material-ui/core/Typography";
 
-const ME_QUERY = `{
-  me {
-    _id 
-    name 
-    email 
-    picture
-  }
-}`;
+import Context from "../../context";
+import { ME_QUERY } from "../../graphql/queries";
 
 const Login = ({ classes }) => {
+  const { dispatch } = useContext(Context);
+
   const onSuccess = async (googleUser) => {
-    const idToken = googleUser.getAuthResponse().id_token;
-    // console.log({ googleUser });
-    const client = new GraphQLClient("http://localhost:4000/graphql", {
-      headers: { authorization: idToken },
-    });
-    const data = await client.request(ME_QUERY);
-    console.log({ data });
+    try {
+      const idToken = googleUser.getAuthResponse().id_token;
+      // console.log({ googleUser });
+      const client = new GraphQLClient("http://localhost:4000/graphql", {
+        headers: { authorization: idToken },
+      });
+      // const data = await client.request(ME_QUERY);
+      // dispatch({ type: "LOGIN_USER", payload: data.me });
+      // console.log({ data });
+      const { me } = await client.request(ME_QUERY);
+
+      console.log({ me });
+      dispatch({ type: "LOGIN_USER", payload: me });
+      dispatch({ type: "IS_LOGGED_IN", payload: googleUser.isSignedIn() });
+    } catch (err) {
+      onFailure(err);
+    }
   };
+
+  const onFailure = (err) => {
+    console.error("Error logging in", err);
+  };
+
   return (
-    <GoogleLogin
-      clientId="371480546108-hm0v204snl5vlu98h0sdasinhnkb1grt.apps.googleusercontent.com"
-      onSuccess={onSuccess}
-      isSignedIn={true}
-    />
+    <div className={classes.root}>
+      <Typography
+        component="h1"
+        variant="h3"
+        gutterBottom
+        noWrap
+        style={{ color: "rgb(66,133,244)" }}
+      >
+        Welcome
+      </Typography>
+      <GoogleLogin
+        clientId="371480546108-hm0v204snl5vlu98h0sdasinhnkb1grt.apps.googleusercontent.com"
+        onSuccess={onSuccess}
+        onFailure={onFailure}
+        isSignedIn={true}
+        theme="dark"
+        buttonText="Login with Google"
+      />
+    </div>
   );
 };
 
