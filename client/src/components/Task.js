@@ -35,6 +35,7 @@ const styles = {
     minWidth: 350,
     maxWidth: 400,
     maxHeight: "calc(100vh - 64px)",
+    overflowX: "none",
     overflowY: "scroll",
     display: "flex",
     justifyContent: "center",

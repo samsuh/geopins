@@ -11,12 +11,20 @@ import Context from "../../context";
 
 const PinContent = ({ classes }) => {
   const { state } = useContext(Context);
-  const { title, content, author, createdAt, comments } = state.currentPin;
+  const {
+    title,
+    content,
+    author,
+    createdAt,
+    comments,
+    image,
+  } = state.currentPin;
   return (
     <div className={classes.root}>
       <Typography component="h2" variant="h4" color="primary" gutterBottom>
         {title}
       </Typography>
+      <img src={image} alt={title} className={classes.image} />
       <Typography
         className={classes.text}
         component="h3"
@@ -60,6 +68,11 @@ const styles = (theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    height: 300,
+    width: 300,
+    objectFit: "cover",
   },
 });
 
