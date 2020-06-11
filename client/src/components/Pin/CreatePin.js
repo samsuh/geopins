@@ -48,13 +48,13 @@ const CreatePin = ({ classes }) => {
       const url = await handleImageUpload();
       const { latitude, longitude } = state.draft;
       const variables = { title, image: url, content, latitude, longitude };
-      const { createPin } = await client.request(
-        CREATE_PIN_MUTATION,
-        variables
-      );
-      console.log("Pin created", { createPin });
-      dispatch({ type: "CREATE_PIN", payload: createPin });
-      console.log("New Pin visually rendered");
+      // const { createPin } = await client.request( //don't need value back now since we're dispatching elsewhere
+      await client.request(CREATE_PIN_MUTATION, variables);
+      //no longer needed here because we're dispatching "CREATE_PIN" from inside Subscription component in Maps.js
+      // console.log("Pin created", { createPin });
+      // dispatch({ type: "CREATE_PIN", payload: createPin });
+
+      // console.log("New Pin visually rendered");
       handleDeleteDraft();
     } catch (err) {
       setSubmitting(false);
