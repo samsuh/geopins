@@ -69,8 +69,8 @@ const Map = ({ classes }) => {
           <Marker
             latitude={userPosition.latitude}
             longitude={userPosition.longitude}
-            // offsetLeft={-19}
-            // offsetRight={-37}
+            offsetLeft={-19}
+            offsetTop={-37}
           >
             <PinIcon size={40} color="red" />
           </Marker>
@@ -81,9 +81,8 @@ const Map = ({ classes }) => {
           <Marker
             latitude={state.draft.latitude}
             longitude={state.draft.longitude}
-            offsetLeft={-22}
-            offsetRight={-37}
-            offsetTop={-38}
+            offsetLeft={-19}
+            offsetTop={-37}
           >
             <PinIcon size={40} color="hotpink" />
           </Marker>
