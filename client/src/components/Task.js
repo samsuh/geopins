@@ -3,6 +3,7 @@
 import React, { useContext } from "react";
 import NoContent from "./Pin/NoContent";
 import CreatePin from "./Pin/CreatePin";
+import PinContent from "./Pin/PinContent";
 
 import { withStyles } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
@@ -11,13 +12,15 @@ import Context from "../context";
 
 const Task = ({ classes }) => {
   const { state } = useContext(Context);
-  const { draft } = state;
+  const { draft, currentPin } = state;
 
   let TaskContent;
-  if (!draft) {
+  if (!draft && !currentPin) {
     TaskContent = NoContent;
-  } else if (draft) {
+  } else if (draft && !currentPin) {
     TaskContent = CreatePin;
+  } else if (!draft && currentPin) {
+    TaskContent = PinContent;
   }
 
   return (
