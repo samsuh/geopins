@@ -79,6 +79,19 @@ export default function reducer(state, { type, payload }) {
         currentPin: null,
       };
 
+    case "CREATE_COMMENT":
+      //take the return value from mutation, once we have updated pin with the added comment, go through entire pins array, find the pin with matching id from payload, and swap out old pin with new pin.
+      const updatedCurrentPin = payload;
+      //find and replace
+      const updatedPins = state.pins.map((pin) =>
+        pin._id === updatedCurrentPin._id ? updatedCurrentPin : pin
+      );
+      return {
+        ...state,
+        pins: updatedPins,
+        currentPin: updatedCurrentPin, //stays on the pin the user was just on so they see their comment.
+      };
+
     default:
       return state;
   }
