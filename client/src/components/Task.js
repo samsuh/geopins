@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import NoContent from "./Pin/NoContent";
 import CreatePin from "./Pin/CreatePin";
 import PinContent from "./Pin/PinContent";
+import { unstable_useMediaQuery as useMediaQuery } from "@material-ui/core/useMediaQuery";
 
 import { withStyles } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
@@ -11,6 +12,8 @@ import { Paper } from "@material-ui/core";
 import Context from "../context";
 
 const Task = ({ classes }) => {
+  const mobileSize = useMediaQuery("(max-width: 650px)");
+
   const { state } = useContext(Context);
   const { draft, currentPin } = state;
 
@@ -24,7 +27,7 @@ const Task = ({ classes }) => {
   }
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={mobileSize ? classes.rootMobile : classes.root}>
       <TaskContent />
     </Paper>
   );
@@ -32,17 +35,16 @@ const Task = ({ classes }) => {
 
 const styles = {
   root: {
-    minWidth: 350,
-    maxWidth: 400,
+    minWidth: 360,
+    // maxWidth: 400,
     maxHeight: "calc(100vh - 64px)",
-    overflowX: "none",
     overflowY: "scroll",
     display: "flex",
     justifyContent: "center",
   },
   rootMobile: {
     maxWidth: "100%",
-    maxHeight: 300,
+    // maxHeight: 300,
     overflowX: "hidden",
     overflowY: "scroll",
   },
